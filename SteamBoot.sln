@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.9
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SteamBoot", "SteamBoot\SteamBoot.csproj", "{8B317F67-F935-49DF-B421-B8EB598F3460}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PegarInsignia", "PegarInsignia\PegarInsignia.csproj", "{B27E40C2-8C6E-41DB-9C25-9B2FB2EDB697}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Steam", "Steam\Steam.csproj", "{3C6E1FFC-6526-4BD8-9C55-FC499E991053}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8B317F67-F935-49DF-B421-B8EB598F3460}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B317F67-F935-49DF-B421-B8EB598F3460}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B317F67-F935-49DF-B421-B8EB598F3460}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8B317F67-F935-49DF-B421-B8EB598F3460}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B27E40C2-8C6E-41DB-9C25-9B2FB2EDB697}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B27E40C2-8C6E-41DB-9C25-9B2FB2EDB697}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B27E40C2-8C6E-41DB-9C25-9B2FB2EDB697}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B27E40C2-8C6E-41DB-9C25-9B2FB2EDB697}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C6E1FFC-6526-4BD8-9C55-FC499E991053}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C6E1FFC-6526-4BD8-9C55-FC499E991053}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C6E1FFC-6526-4BD8-9C55-FC499E991053}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C6E1FFC-6526-4BD8-9C55-FC499E991053}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
