@@ -89,7 +89,7 @@ namespace PegarInsignia
                 else
                 {
                     form.Visible = false;
-                    //Alterar isso
+                    //Alterar isso 
                     wb.Navigate("http://steamcommunity.com/id/Liwelin/badges/");
                 }
 
