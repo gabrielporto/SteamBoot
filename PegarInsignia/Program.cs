@@ -46,8 +46,8 @@ namespace PegarInsignia
             form.WindowState = FormWindowState.Maximized;
             form.Controls.Add(wb);
             form.Name = "Browser";
-            form.Visible = false;
             Application.Run(form);
+            form.Visible = false;
         }
 
         public static void wb_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -69,8 +69,11 @@ namespace PegarInsignia
             else
             {
                 //Alterar isso
-                if (url == "http://steamcommunity.com/id/Liwelin/badges/")
+                if (url == "http://steamcommunity.com/id/Liwelin/badges?p=1")
                 {
+
+                    Util.GetAllBadge(wb);
+
                     insignias = new List<Badge>();
 
                     //List<string> links = new List<string>();
@@ -90,7 +93,7 @@ namespace PegarInsignia
                 {
                     form.Visible = false;
                     //Alterar isso 
-                    wb.Navigate("http://steamcommunity.com/id/Liwelin/badges/");
+                    wb.Navigate("http://steamcommunity.com/id/Liwelin/badges?p=1");
                 }
 
                 //MessageBox.Show("Logado");

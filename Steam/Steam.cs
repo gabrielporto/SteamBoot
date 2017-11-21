@@ -14,13 +14,10 @@ namespace Steam
     class SQLite
     {
         private SQLiteConnection m_dbConnection;
-
         public SQLite()
         {
             m_dbConnection = new SQLiteConnection(@"Data Source=..\..\DB\MyDatabase.sqlite;Version=3;");
         }
-
-
         public DataTable ExecuteReader(string sql)
         {
             SQLiteDataReader reader = null;
@@ -45,7 +42,6 @@ namespace Steam
 
             return dt;
         }
-
         public void ExecuteNonQuery(string sql)
         {
             try
@@ -65,7 +61,6 @@ namespace Steam
             finally { FecharConexao(); }
 
         }
-
         private void AbrirConexao()
         {
             if (m_dbConnection.State == System.Data.ConnectionState.Closed)
@@ -78,7 +73,6 @@ namespace Steam
             }
 
         }
-
         private void FecharConexao()
         {
             if (m_dbConnection.State == System.Data.ConnectionState.Open)
@@ -91,8 +85,6 @@ namespace Steam
             }
 
         }
-
-
     }
 
     class Card
@@ -106,8 +98,6 @@ namespace Steam
         public string id_Badge { get; set; }
         public string link_mercado { get; set; }
         public string link_forum { get; set; }
-
-
         public Card(HtmlElement htmlElement)
         {
             this.data_atualizacao = DateTime.Now;
@@ -180,12 +170,9 @@ namespace Steam
         public string link_forum { get; set; }
         public string data_atualizacao { get; set; }
         public List<Card> cartas { get; set; }
-
         public string badge_info_title { get; set; }
         public string badge_info_level { get; set; }
         public string badge_info_unlocked { get; set; }
-
-
         public Badge() { }
         public Badge(HtmlElement htmlElement)
         {
@@ -227,7 +214,6 @@ namespace Steam
             this.data_atualizacao = DateTime.Now.ToString();
             Inserir_Sqlite(this);
         }
-
         public void Inserir_Sqlite(Badge insignia)
         {
             string sql = "insert into Badge values (null,'" + insignia.link + "','"
@@ -244,7 +230,6 @@ namespace Steam
 
             new SQLite().ExecuteNonQuery(sql);
         }
-
         public void Get_Badge_By_link(string _link)
         {
             SQLite sqlite = new SQLite();
@@ -280,7 +265,6 @@ namespace Steam
             this.data_atualizacao = dt.Rows[0]["data_atualizacao"].ToString();
 
         }
-
         public void UpDate_Sqlite(Badge insignia)
         {
             string sql = "update Badge set" +
@@ -298,7 +282,6 @@ namespace Steam
 
             new SQLite().ExecuteNonQuery(sql);
         }
-
         private void browser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             Get_Badge_By_link(this.link);
@@ -335,6 +318,48 @@ namespace Steam
             this.cartas = _cartas;
 
             Console.WriteLine("browser_DocumentCompleted");
+        }
+    }
+
+    public class Util
+    {
+        public static void GetAllBadge(WebBrowser _wbbadges)
+        {
+            _wbbadges.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(WebBrowserDocumentCompleted);
+            HtmlDocument doc = _wbbadges.Document;
+            string url = _wbbadges.Url.AbsoluteUri;
+
+            if (url == "http://steamcommunity.com/id/Liwelin/badges?p=1")
+            {
+                List<Badge> insignias = new List<Badge>();
+
+                //List<string> links = new List<string>();
+
+                int contador = 0;
+
+                foreach (HtmlElement item in doc.All)
+                {
+                    if (item.GetAttribute("className") == "pagelink")
+                    {
+                        Console.WriteLine(String.Format("Pagina{0}", item.InnerHtml));
+                    }
+
+                    if (item.GetAttribute("className") == "badge_row is_link")
+                    {
+                        contador++;
+                        insignias.Add(new Badge(item));
+                        Console.WriteLine(string.Format("Badge {0}", contador));
+                    }
+
+                }
+
+                Console.WriteLine("FIM");
+
+            }
+        }
+        public static void WebBrowserDocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+
         }
     }
 }
