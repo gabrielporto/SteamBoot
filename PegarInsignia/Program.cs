@@ -74,19 +74,19 @@ namespace PegarInsignia
 
                     Util.GetAllBadge(wb);
 
-                    insignias = new List<Badge>();
+                    //insignias = new List<Badge>();
 
-                    //List<string> links = new List<string>();
+                    ////List<string> links = new List<string>();
 
-                    foreach (HtmlElement item in doc.All)
-                    {
-                        if (item.GetAttribute("className") == "badge_row is_link")
-                        {
-                            insignias.Add(new Badge(item));
-                        }
-                    }
+                    //foreach (HtmlElement item in doc.All)
+                    //{
+                    //    if (item.GetAttribute("className") == "badge_row is_link")
+                    //    {
+                    //        insignias.Add(new Badge(item));
+                    //    }
+                    //}
 
-                    Console.WriteLine("FIM");
+                    //Console.WriteLine("FIM");
 
                 }
                 else

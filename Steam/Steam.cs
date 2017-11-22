@@ -189,13 +189,15 @@ namespace Steam
 
             wb.Navigate(this.link, "_self", null, "User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko");
 
+            Console.WriteLine(string.Format("Rastreando pagina {0}", this.link));
+
             foreach (HtmlElement item in htmlElement.GetElementsByTagName("div"))
             {
                 if (item.GetAttribute("className") == "badge_title")
                 {
                     this.nome = item.InnerText.Substring(0, item.InnerText.Length - 14).Replace("'", "''");
                 }
-                if (item.GetAttribute("className") == "badge_progress_info")
+                if (item.GetAttribute("className") == "badge_progress_info" && !string.IsNullOrEmpty(item.InnerText))
                 {
                     this.numCartasTenho = item.InnerText.Split(new string[] { " " }, StringSplitOptions.None)[0];
                     this.numCartas = item.InnerText.Split(new string[] { " " }, StringSplitOptions.None)[2];
@@ -213,6 +215,7 @@ namespace Steam
 
             this.data_atualizacao = DateTime.Now.ToString();
             Inserir_Sqlite(this);
+            Console.WriteLine(string.Format("FIM Rastreando pagina {0}", this.link));
         }
         public void Inserir_Sqlite(Badge insignia)
         {
@@ -288,6 +291,8 @@ namespace Steam
 
             var wb = sender as WebBrowser;
 
+            Console.WriteLine(string.Format("Rastreando pagina {0}", wb.Url.AbsoluteUri));
+
             HtmlDocument doc = wb.Document;
 
             List<Card> _cartas = new List<Card>();
@@ -305,11 +310,9 @@ namespace Steam
                 if (item.GetAttribute("className") == "badge_card_to_collect_links")
                 {
                     this.link_forum = item.GetElementsByTagName("a")[0].GetAttribute("href");
-                    try
-                    {
-                        this.link_mercado = item.GetElementsByTagName("a")[1].GetAttribute("href");
-                    }
-                    catch (Exception) { }
+
+                    this.link_mercado = item.GetElementsByTagName("a")[1].GetAttribute("href");
+
 
                     UpDate_Sqlite(this);
                 }
@@ -317,49 +320,80 @@ namespace Steam
 
             this.cartas = _cartas;
 
-            Console.WriteLine("browser_DocumentCompleted");
+            Console.WriteLine(string.Format("FIM Rastreando pagina {0}", wb.Url.AbsoluteUri));
+
         }
     }
 
     public class Util
     {
+        private static List<Badge> todoasListaInsignias = new List<Badge>();
+        private static UInt16 maxPag = 1;
+        private static bool jaProcessado = false;
+
         public static void GetAllBadge(WebBrowser _wbbadges)
         {
+            //Adicionar o evento para quando for concluido 
             _wbbadges.DocumentCompleted += new WebBrowserDocumentCompletedEventHandler(WebBrowserDocumentCompleted);
-            HtmlDocument doc = _wbbadges.Document;
-            string url = _wbbadges.Url.AbsoluteUri;
 
-            if (url == "http://steamcommunity.com/id/Liwelin/badges?p=1")
+            HtmlDocument _doc = _wbbadges.Document;
+            string _url = _wbbadges.Url.AbsoluteUri;
+
+            //Pegar a pagina que esta sendo pesquisada
+            UInt16 _paginaPesquisa = UInt16.Parse(_url.Split(char.Parse("?"))[1].Substring(2));
+
+            List<Badge> insignias = new List<Badge>();
+
+            if (_url.Contains("badges") &&
+                _url.Substring(0, 29).Equals("http://steamcommunity.com/id/") &&
+                _url.Substring(_url.Length - 11).Equals(string.Format("/badges?p={0}", _paginaPesquisa)))
             {
-                List<Badge> insignias = new List<Badge>();
+                Console.WriteLine(string.Format("Rastreando pagina {0}", _url));
 
-                //List<string> links = new List<string>();
 
-                int contador = 0;
-
-                foreach (HtmlElement item in doc.All)
+                foreach (HtmlElement item in _doc.All)
                 {
                     if (item.GetAttribute("className") == "pagelink")
                     {
-                        Console.WriteLine(String.Format("Pagina{0}", item.InnerHtml));
+                        UInt16 _tryParsePage = 0;
+                        UInt16.TryParse(item.InnerHtml, out _tryParsePage);
+
+                        if (_tryParsePage > maxPag)
+                        {
+                            maxPag = _tryParsePage;
+                        }
                     }
 
                     if (item.GetAttribute("className") == "badge_row is_link")
                     {
-                        contador++;
                         insignias.Add(new Badge(item));
-                        Console.WriteLine(string.Format("Badge {0}", contador));
                     }
 
                 }
 
-                Console.WriteLine("FIM");
+                Console.WriteLine(string.Format("Insignias pegas {0}", insignias.Count));
+                todoasListaInsignias.AddRange(insignias);
+                Console.WriteLine(string.Format("FIM Rastreando pagina {0}", _url));
+            }
+
+            if (!jaProcessado)
+            {
+                jaProcessado = true;
+                for (int i = 2; i < maxPag; i++)
+                {
+                    _wbbadges.Navigate(string.Format("http://steamcommunity.com/id/Liwelin/badges?p={0}", i));
+                }
+            }
+            else
+            {
 
             }
+
         }
+
         public static void WebBrowserDocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-
+            GetAllBadge((WebBrowser)sender);
         }
     }
 }
