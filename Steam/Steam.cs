@@ -187,7 +187,6 @@ namespace Steam
 
             wb.DocumentCompleted += browser_DocumentCompleted;
 
-            System.Threading.Thread.Sleep(60000);
             wb.Navigate(this.link, "_self", null, "User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko");
 
             Console.WriteLine(string.Format("Rastreando pagina {0}", this.link));
@@ -310,12 +309,29 @@ namespace Steam
 
                 if (item.GetAttribute("className") == "badge_card_to_collect_links")
                 {
+
+                    if (item.GetElementsByTagName("a").Count < 2)
+                    {
+                        var wb2 = new WebBrowser()
+                        {
+                            ScriptErrorsSuppressed = true
+                        };
+                        wb2.DocumentCompleted += browser_DocumentCompleted;
+                        wb2.Navigate(this.link, "_self", null, "User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; Trident/7.0; rv:11.0) like Gecko");
+                        return;
+                    }
+
+
                     this.link_forum = item.GetElementsByTagName("a")[0].GetAttribute("href");
+
 
                     this.link_mercado = item.GetElementsByTagName("a")[1].GetAttribute("href");
 
 
                     UpDate_Sqlite(this);
+
+
+
                 }
             }
 
@@ -382,7 +398,6 @@ namespace Steam
                 jaProcessado = true;
                 for (int i = 2; i < maxPag; i++)
                 {
-                    System.Threading.Thread.Sleep(60000);
                     _wbbadges.Navigate(string.Format("http://steamcommunity.com/id/Liwelin/badges?p={0}", i));
                 }
             }
